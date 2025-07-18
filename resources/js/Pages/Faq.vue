@@ -1,11 +1,19 @@
 <script setup>
-import { Head } from '@inertiajs/vue3'
+import { ref } from 'vue'
+import { usePage, Head } from '@inertiajs/vue3'
 
-defineProps({ user: Object })
+const faqs = ref(usePage().props.faqs)
 </script>
 
 <template>
-    <Head title="Welcome" />
-    <h1>Welcome</h1>
-    <p>Hello welcome to your first Inertia app!</p>
+  <Head title="FAQ" />
+  <div>
+    <h1>Häufig gestellte Fragen</h1>
+    <ul>
+      <li v-for="faq in faqs" :key="faq.id">
+        <h2>{{ faq.question }}</h2>
+        <p>{{ faq.answer }}</p>
+      </li>
+    </ul>
+  </div>
 </template>
