@@ -1,0 +1,52 @@
+:root {
+	/* Brand Primary Green */
+	--clr-brand-primary: #008143;
+	/* Brand Secondary Green */
+	--clr-brand-secondary: #64b32c;
+	/* Primary Dark Green */
+	--clr-darkgreen-50: #f2f8f6;
+	--clr-darkgreen-100: #cce1dc;
+	--clr-darkgreen-200: #b3d3cb;
+	--clr-darkgreen-300: #80b5a9;
+	--clr-darkgreen-400: #4d9786;
+	--clr-darkgreen-500: #006b52; /*Default */
+	--clr-darkgreen-600: #01604a;
+	--clr-darkgreen-700: #015642;
+	--clr-darkgreen-800: #014031;
+	--clr-darkgreen-900: #002019;
+	/* Accent Bright Green */
+	--clr-brightgreen-25: #f9fff5;
+	--clr-brightgreen-50: #efffe4;
+	--clr-brightgreen-100: #c8fea1;
+	--clr-brightgreen-200: #b0fd78; /* Default */
+	--clr-brightgreen-300: #9ee46c;
+	--clr-brightgreen-400: #7bb154;
+	--clr-brightgreen-500: #527638;
+	--clr-brightgreen-600: #466530;
+	--clr-brightgreen-700: #354c24;
+	--clr-brightgreen-800: #233318;
+	--clr-brightgreen-900: #12190c;
+	/* Neutral Gray */
+	--clr-gray-50: #f8f8f8;
+	--clr-gray-100: #ededed;
+	--clr-gray-200: #d2d2d2;
+	--clr-gray-300: #b4b4b4;
+	--clr-gray-400: #9d9d9d;
+	--clr-gray-500: #696969; /* Default */
+	--clr-gray-600: #595959;
+	--clr-gray-700: #444444;
+	--clr-gray-800: #353535;
+	--clr-gray-900: #1f1f1f;
+	--clr-gray-1000: #1e1e1e;
+	/* Error Red */
+	--clr-red-300: #ed9999;
+	--clr-red-400: #e36666;
+	--clr-red-500: #d10000; /* Default */
+	--clr-red-600: #bc0000;
+	--clr-red-700: #9d0000;
+	--clr-red-8t00: #7d0000;
+	/* White */
+	--clr-white: #ffffff;
+	/* Black */
+	--clr-black: #1e1e1e;
+}
