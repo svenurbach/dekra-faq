@@ -6,7 +6,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\File;
 use App\Models\Faq;
-use App\Models\Tag;
+use App\Models\Category;
 
 class FaqSeeder extends Seeder
 {
@@ -19,16 +19,15 @@ class FaqSeeder extends Seeder
         $data = json_decode($json, true);
 
         foreach ($data as $item) {
-            $faq = Faq::create([
-                'question' => $item['question'],
-                'answer' => $item['answer'],
-            ]);
-
-            $tag = Tag::firstOrCreate([
+            $category = Category::firstOrCreate([
                 'name' => $item['category'],
             ]);
 
-            $faq->tags()->attach($tag->id);
+            Faq::create([
+                'question' => $item['question'],
+                'answer' => $item['answer'],
+                'category_id' => $category->id,
+            ]);
         }
     }
 }
