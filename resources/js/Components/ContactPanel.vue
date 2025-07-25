@@ -1,6 +1,6 @@
 <script setup>
 import AppButton from './AppButton.vue';
-import iconMail from '@assets/icons/icon-email.svg';
+import IconMail from '@icons/icon-email.svg';
 </script>
 
 <template>
@@ -11,9 +11,9 @@ import iconMail from '@assets/icons/icon-email.svg';
         </div>
         <AppButton
         title="Schreibe uns"
-        :icon=iconMail
+        :icon="IconMail"
         href="/contact"
-        class="bg-(--clr-brightgreen-700) text-(--clr-brightgreen-100)"
+        class="bg-(--clr-darkgreen-700) text-(--clr-brightgreen-100)"
         />
     </div>
 </template>

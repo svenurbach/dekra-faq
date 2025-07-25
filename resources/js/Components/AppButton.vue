@@ -1,24 +1,18 @@
 <script setup>
-import { Link } from '@inertiajs/vue3';
-
 defineProps({
     title: {
         type: String,
         required: true
     },
     icon: {
-        type: String,
-    },
-    href: {
-        type: String,
-        required: false
+        type: Object,
     }
 });
 </script>
 
 <template>
-        <button class="py-3 px-4 rounded-sm flex items-center justify-center cursor-pointer">
-            <img v-if="icon" :src="icon" alt="Button Icon" class="w-5"/>
-            <span v-if="title" class="pl-4 font-bold">{{ title }}</span>
-        </button>
+    <button class="py-3 px-4 rounded-sm flex items-center justify-center cursor-pointer">
+        <component :is="icon" class="size-5 fill-current mr-4" v-if="icon" />
+        <span v-if="title" class="font-bold">{{ title }}</span>
+    </button>
 </template>
