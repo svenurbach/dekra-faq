@@ -16,32 +16,32 @@ const isActive = (path) => {
 </script>
 
 <template>
-    <div class="fixed w-full bg-(--clr-darkgreen-500)/70 z-20">
+    <div class="fixed w-full bg-(--clr-darkgreen-500)/70 backdrop-blur-sm z-20">
         <div class="main-w flex items-center justify-between p-[calc(var(--app-padding)*2)]">
             <CompanyLogo />
             <nav>
                 <ul class="flex items-center gap-[calc(var(--app-padding)*2)] text-(--clr-gray-300)">
                     <li>
-                        <Link href="/" :class="{ 'text-(--clr-brightgreen-300) font-bold': isActive('/') }">
+                        <Link href="/" :class="{ 'text-(--clr-brightgreen-200) font-bold': isActive('/') }" class="text-xl">
                         FAQ
                         </Link>
                     </li>
                     <li v-if="user?.is_admin">
-                        <Link  href="/admin/tags" :class="{ 'text-(--clr-brightgreen-300) font-bold': isActive('/admin/tags') }">Tags</Link>
+                        <Link href="/admin/tags" :class="{ 'text-(--clr-brightgreen-200) font-bold': isActive('/admin/tags') }" class="text-xl">Tags</Link>
                     </li>
                     <li v-if="user?.is_admin">
-                        <Link  href="/admin/faqs" :class="{ 'text-(--clr-brightgreen-300) font-bold': isActive('/admin/faqs') }">Fragen</Link>
+                        <Link href="/admin/faqs" :class="{ 'text-(--clr-brightgreen-200) font-bold': isActive('/admin/faqs') }" class="text-xl">Fragen</Link>
                     </li>
                     <li v-if="!user?.is_admin">
                         <Link href="/login">
                             <AppButton title="Login" :icon="IconArrowRight"
-                            class="bg-(--clr-brightgreen-300) text-(--clr-darkgreen-500)" />
+                            class="bg-(--clr-brightgreen-200) text-(--clr-darkgreen-500)" />
                         </Link>
                     </li>
                     <li v-else>
                         <Link :href="route('logout')" method="post">
                             <AppButton title="Logout" :icon="IconArrowLeft"
-                            class="bg-(--clr-brightgreen-300) text-(--clr-darkgreen-500)" />
+                            class="bg-(--clr-brightgreen-200) text-(--clr-darkgreen-500)" />
                         </Link>
                     </li>
                 </ul>
