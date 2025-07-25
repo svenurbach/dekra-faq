@@ -6,6 +6,7 @@ import AdminActionButton from '@/Components/Admin/AdminActionButton.vue';
 import AdminModal from '@/Components/Admin/AdminModal.vue';
 import EditIcon from '@icons/icon-edit.svg'
 import DeleteIcon from '@icons/icon-delete-1.svg'
+import AdminToolBar from '@/Components/Admin/AdminToolBar.vue';
 import { route } from 'ziggy-js';
 import { ref } from 'vue'
 
@@ -48,16 +49,7 @@ function deleteTag() {
     </template>
   </AdminHeader>
   <div class="main-w">
-    <div class="flex items-center justify-between mb-4">
-      <div>
-        <h2>Tag Verwaltung</h2>
-        {{ tags.length }} Tags insgesamt
-      </div>
-      <div>AdminSearchBar Suche nach Tags</div>
-      <div>
-        <AppButton title="Neuen Tag erstellen" class="bg-(--clr-darkgreen-500) text-(--clr-brightgreen-200)" />
-      </div>
-    </div>
+    <AdminToolBar title="Tags" buttonText="Neuen Tag erstellen" :items="tags" />
     <div
       class="overflow-x-auto border border-(--clr-gray-200) bg-(--clr-gray-100) shadow-lg rounded-lg text-(--clr-gray-600)">
       <table class="w-full table-auto md:table-fixed">
