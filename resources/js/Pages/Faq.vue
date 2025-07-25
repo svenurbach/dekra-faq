@@ -29,7 +29,13 @@ function filterByCategory(categoryName) {
               <h2 v-if="page.url.startsWith('/?search')">Fragen zum Suchbegriff: <span class="font-bold">
                 {{ page.props.search }}</span></h2>
             </div>
-            <AppFaqList :faqs="faqs" />
+            <div>
+              <AppFaqList v-if="faqs && faqs.length" :faqs="faqs" />
+              <div v-else class="text-center text-(--clr-gray-500)">
+                <span v-if="activeCategory">Keine Fragen in dieser Kategorie gefunden.</span>
+                <span v-else>Keine Fragen gefunden.</span>
+              </div>
+            </div>
             <ContactPanel />
         </div>
 </template>
