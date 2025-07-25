@@ -2,11 +2,14 @@
 import { ref } from 'vue';
 
 const props = defineProps({
-    title: { type: String, required: true },
+    title: {
+        type: String,
+        required: true
+    },
 });
 
 const show = ref(false);
-const toggle = (event) => {
+const toggle = () => {
     show.value = !show.value;
 }
 </script>
