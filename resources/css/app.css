@@ -14,11 +14,11 @@
 }
 
 h1 {
-    @apply text-5xl mb-(--app-padding);
+    @apply text-5xl pb-(--app-padding);
 }
 
 h2 {
-    @apply text-2xl mb-(--app-padding);
+    @apply text-2xl pb-(--app-padding);
 }
 
 .main-w {
