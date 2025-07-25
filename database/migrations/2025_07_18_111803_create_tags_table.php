@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('tags', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->string('icon')->default('/resources/assets/icons/icon-categorie-allgemeines.svg');
             $table->timestamps();
         });
     }
