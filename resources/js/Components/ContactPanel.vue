@@ -1,6 +1,7 @@
 <script setup>
 import AppButton from './AppButton.vue';
 import IconMail from '@icons/icon-email.svg';
+import { Link } from '@inertiajs/vue3';
 </script>
 
 <template>
@@ -9,11 +10,12 @@ import IconMail from '@icons/icon-email.svg';
             <p class="font-bold">Du findest keine Antwort auf deine Frage?</p>
             <p class="w-[48ch]">Nimm einfach Kontakt zu uns auf und wir versuchen so schnell wie möglich dir weiter zu helfen!</p>
         </div>
-        <AppButton
-        title="Schreibe uns"
-        :icon="IconMail"
-        href="/contact"
-        class="bg-(--clr-darkgreen-700) text-(--clr-brightgreen-100)"
-        />
+        <a href="mailto:mail@example.org">
+            <AppButton
+            title="Schreibe uns"
+            :icon="IconMail"
+            class="bg-(--clr-darkgreen-700) text-(--clr-brightgreen-100)"
+            />
+        </a>
     </div>
 </template>
