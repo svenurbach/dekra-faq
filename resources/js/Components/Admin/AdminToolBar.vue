@@ -21,7 +21,7 @@ defineProps({
 </script>
 
 <template>
-    <div class="flex items-center justify-between mt-10 mb-6">
+    <div class="flex items-center justify-between mt-16 mb-9">
         <div>
             <div v-if="items">
                 <div class="text-2xl text-(--clr-darkgreen-500)">{{ title }} Verwaltung</div>
