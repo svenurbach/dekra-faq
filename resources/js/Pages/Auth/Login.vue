@@ -38,7 +38,7 @@ function submit() {
           <div v-if="form.errors.password" class="text-(--clr-red-500) text-sm">{{ form.errors.password }}</div>
         </div>
       </div>
-      <AppButton @click="submit" title="Anmelden" class="bg-(--clr-darkgreen-500) text-(--clr-brightgreen-200)" />
+      <AppButton type="submit" title="Anmelden" class="bg-(--clr-darkgreen-500) text-(--clr-brightgreen-200)" />
     </form>
   </div>
 </template>
