@@ -18,7 +18,7 @@ class FaqSeeder extends Seeder
         $json = File::get(database_path('data/fragen-antworten.json'));
         $data = json_decode($json, true);
 
-        foreach ($data as $item) {
+        foreach ($data as $index => $item) {
             $category = Category::firstOrCreate([
                 'name' => $item['category'],
             ]);
@@ -27,6 +27,7 @@ class FaqSeeder extends Seeder
                 'question' => $item['question'],
                 'answer' => $item['answer'],
                 'category_id' => $category->id,
+                'sort_order' => $index + 1
             ]);
         }
     }

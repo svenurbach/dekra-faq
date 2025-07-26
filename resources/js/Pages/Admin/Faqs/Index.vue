@@ -1,21 +1,128 @@
 <script setup>
-import { usePage } from '@inertiajs/vue3'
-import AdminActionButton from '@/Components/Admin/AdminActionButton.vue';
+import { usePage, router, Head } from '@inertiajs/vue3'
 import AdminHeader from '@/Components/Admin/AdminHeader.vue';
-import EditIcon from '@assets/icons/icon-edit.svg'
-import DeleteIcon from '@assets/icons/icon-delete-1.svg'
-import MoveUpIcon from '@assets/icons/icon-sort-up.svg'
-import MoveDownIcon from '@assets/icons/icon-sort-down.svg'
+import AppButton from '@/Components/AppButton.vue'
+import AdminActionButton from '@/Components/Admin/AdminActionButton.vue';
+import AdminModal from '@/Components/Admin/AdminModal.vue';
+import EditIcon from '@icons/icon-edit.svg'
+import SaveIcon from '@icons/icon-check.svg'
+import DeleteIcon from '@icons/icon-delete-1.svg'
+import CloseIcon from '@icons/icon-close-1.svg'
+import TrashIcon from '@icons/icon-delete.svg'
+import AdminToolBar from '@/Components/Admin/AdminToolBar.vue';
 import { route } from 'ziggy-js';
 import { ref } from 'vue'
-import AdminToolBar from '../../../Components/Admin/AdminToolBar.vue';
+import MoveUpIcon from '@assets/icons/icon-sort-up.svg'
+import MoveDownIcon from '@assets/icons/icon-sort-down.svg'
 
 const { faqs } = usePage().props
 
-console.log('FAQs:', faqs)
+const showCreateModal = ref(false)
+const showEditModal = ref(false)
+const showDeleteModal = ref(false)
+
+const selectedFaq = ref(null)
+const form = ref({
+  name: '',
+  errors: {}
+});
+
+function handleErrors(errors) {
+  form.value.errors = errors;
+}
+
+const moveUp = async (id) => {
+  router.post(`/admin/faqs/${id}/move-up`, {}, {
+    onSuccess: () => {
+      router.visit(route('faqs.index'), {
+        preserveScroll: true,
+        onSuccess: (page) => {
+          faqs.value = page.props.faqs;
+        }
+      });
+    }
+  })
+}
+
+const moveDown = (id) => {
+  router.post(`/admin/faqs/${id}/move-down`, {}, {
+    onSuccess: () => {
+      router.visit(route('faqs.index'), {
+        preserveScroll: true,
+        onSuccess: (page) => {
+          faqs.value = page.props.faqs;
+        }
+      });
+    }
+  })
+};
+
+// Begin Delete
+function openConfirmDeleteModal(faq) {
+  selectedFaq.value = faq
+  showDeleteModal.value = true
+}
+
+function deleteFaq() {
+  router.delete(route('faqs.destroy', selectedFaq.value.id), {
+    onSuccess: () => {
+      router.get(route('faqs.index'))
+    },
+    onFinish: () => {
+      showDeleteModal.value = false
+      selectedFaq.value = null
+    }
+  })
+}
+// End Delete
+
+// Begin Edit
+function openEditModal(faq) {
+  selectedFaq.value = faq
+  form.value = { name: faq.name }
+  showEditModal.value = true
+}
+
+function updateFaq() {
+  router.put(route('faqs.update', selectedFaq.value.id), {
+    name: form.value.name
+  }, {
+    onSuccess: () => {
+      form.value.errors = {};
+      router.get(route('faqs.index'));
+      showEditModal.value = false;
+    },
+    onError: (errors) => {
+      handleErrors(errors);
+    }
+  });
+}
+// End Edit
+
+// Begin Create
+function openCreateModal() {
+  form.value = { name: '' }
+  showCreateModal.value = true
+}
+
+function createFaq() {
+  router.post(route('faqs.store'), form.value, {
+    onSuccess: () => {
+      router.get(route('faqs.index'), { preserveScroll: true })
+      showCreateModal.value = false
+    },
+    onError: (errors) => {
+      handleErrors(errors);
+    }
+  })
+}
+// End Create
+
+
 </script>
 
 <template>
+
   <Head title="Dekra | Admin | Fragen" />
   <AdminHeader>
     <template #headline>
@@ -27,7 +134,8 @@ console.log('FAQs:', faqs)
     </template>
   </AdminHeader />
   <div class="main-w">
-    <AdminToolBar title="Fragen" buttonText="Neue Frage erstellen" :items="faqs" />
+    <AdminToolBar title="Fragen" buttonText="Neue Frage erstellen" :items="faqs" :routeName="'faqs.index'"
+      @create="openCreateModal" />
     <div
       class="overflow-x-auto border border-(--clr-gray-200) bg-(--clr-gray-100) shadow-lg rounded-lg text-(--clr-gray-600)">
       <table class="w-full">
@@ -48,15 +156,58 @@ console.log('FAQs:', faqs)
                 { day: '2-digit', month: '2-digit', year: 'numeric' }) }}</td>
             <td class="p-4 border-b border-(--clr-white) text-center">
               <div class="flex justify-center gap-3">
-                <AdminActionButton @click.prevent="openConfirmDeleteModal(tag)" :icon="EditIcon" />
-                <AdminActionButton @click.prevent="openConfirmDeleteModal(tag)" :icon="DeleteIcon" />
-                <AdminActionButton @click.prevent="openConfirmDeleteModal(tag)" :icon="MoveUpIcon" />
-                <AdminActionButton @click.prevent="openConfirmDeleteModal(tag)" :icon="MoveDownIcon" />
+                <AdminActionButton @click.prevent="openConfirmDeleteModal(faq)" :icon="EditIcon" />
+                <AdminActionButton @click.prevent="openConfirmDeleteModal(faq)" :icon="DeleteIcon" />
+                <AdminActionButton @click="moveUp(faq.id)" :icon="MoveUpIcon" />
+                <AdminActionButton @click="moveDown(faq.id)" :icon="MoveDownIcon" />
               </div>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- Begin Delete Modal -->
+    <AdminModal :show="showDeleteModal" @close="showDeleteModal = false">
+      <template #header>
+        <h2>Sind Sie sicher, dass Sie die folgende Frage löschen wollen?</h2>
+      </template>
+      <div v-if="selectedFaq" class="text-(--clr-gray-500) pt-4 pb-9">
+        <p>Frage</p>
+        <p class="font-bold text-xl">{{ selectedFaq.question }}</p>
+      </div>
+      <template #footer>
+        <AppButton title="Abbrechen" :icon=CloseIcon class="bg-(--clr-gray-500) text-(--clr-white)"
+          @click="showDeleteModal = false" />
+        <AppButton title="Löschen" :icon=TrashIcon class="bg-(--clr-red-700) text-(--clr-white)" @click="deleteFaq" />
+      </template>
+    </AdminModal>
+    <!-- End Delete Modal -->
+
+    <!-- Begin Create Modal -->
+    <AdminModal :show="showCreateModal" @close="showCreateModal = false">
+      <template #header>
+        <h2>Neue Frage erstellen</h2>
+      </template>
+      <p class="text-sm text-(--clr-gray-500) w-[60ch]">Füllen Sie die Felder für Frage und Antwort aus, wählen Sie eine
+        Kategorie, vergeben Sie passende Schlagwörter und klicken Sie auf "Speichern".</p>
+      <form @submit.prevent="createFaq">
+        <div class="pt-7 pb-14">
+          <input type="text" v-model="form.name"
+            class="w-full p-2 border border-(--clr-darkgreen-500) bg-(--clr-white) rounded-sm text-(--clr-gray-500)"
+            required />
+          <p v-if="form.errors && form.errors.name" class="mt-1 text-sm text-(--clr-red-500)">
+            {{ form.errors.name }}
+          </p>
+        </div>
+        <div class="flex justify-between">
+          <AppButton title="Abbrechen" :icon=CloseIcon class="bg-(--clr-red-700) text-(--clr-white)"
+            @click="showCreateModal = false" type="button" />
+          <AppButton title="Speichern" :icon=SaveIcon class="bg-(--clr-darkgreen-500) text-(--clr-brightgreen-200)"
+            type="submit" />
+        </div>
+      </form>
+    </AdminModal>
+    <!-- End Create Modal -->
   </div>
 </template>

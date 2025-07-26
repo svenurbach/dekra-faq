@@ -29,6 +29,7 @@ class FaqController extends Controller
             ->when($category && !$search, function ($query) use ($category) {
                 $query->whereHas('category', fn($q) => $q->where('name', $category));
             })
+            ->orderBy('sort_order')
             ->get();
 
         return Inertia::render('Faq', [

@@ -8,6 +8,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Faq extends Model
 {
+
+    protected $fillable = ['sort_order'];
+
     /**
      * The tags that belong to the faq.
      */
