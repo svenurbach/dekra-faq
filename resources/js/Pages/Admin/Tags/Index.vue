@@ -161,7 +161,7 @@ function createTag() {
       <p class="text-sm text-(--clr-gray-500) w-[40ch]">Vergeben Sie einen aussagekräftigen neuen Namen für den Tag</p>
       <form @submit.prevent="updateTag">
         <div class="pt-7 pb-14">
-          <input type="text" v-model="form.name" class="w-full p-2 border border-(--clr-darkgreen-500) bg-(--clr-white) rounded-sm text-(--clr-gray-500)" required />
+          <input type="text" v-model="form.name" class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)" required />
           <p v-if="form.errors && form.errors.name" class="mt-1 text-sm text-(--clr-red-500)">
             {{ form.errors.name }}
           </p>
@@ -184,7 +184,7 @@ function createTag() {
       <p class="text-sm text-(--clr-gray-500) w-[40ch]">Vergeben Sie einen aussagekräftigen Namen für den neuen Tag</p>
       <form @submit.prevent="createTag">
         <div class="pt-7 pb-14">
-          <input type="text" v-model="form.name" class="w-full p-2 border border-(--clr-darkgreen-500) bg-(--clr-white) rounded-sm text-(--clr-gray-500)" required />
+          <input type="text" v-model="form.name" class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)" required />
           <p v-if="form.errors && form.errors.name" class="mt-1 text-sm text-(--clr-red-500)">
             {{ form.errors.name }}
           </p>
