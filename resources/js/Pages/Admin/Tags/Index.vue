@@ -1,14 +1,13 @@
 <script setup>
-import { usePage, router } from '@inertiajs/vue3'
+import { usePage, router, Head } from '@inertiajs/vue3'
 import AdminHeader from '@/Components/Admin/AdminHeader.vue';
 import AppButton from '@/Components/AppButton.vue'
 import AdminActionButton from '@/Components/Admin/AdminActionButton.vue';
 import AdminModal from '@/Components/Admin/AdminModal.vue';
 import EditIcon from '@icons/icon-edit.svg'
 import SaveIcon from '@icons/icon-check.svg'
-import NewIcon from '@icons/icon-new.svg'
 import DeleteIcon from '@icons/icon-delete-1.svg'
-import CloseIcon from '@icons/icon-close.svg'
+import CloseIcon from '@icons/icon-close-1.svg'
 import TrashIcon from '@icons/icon-delete.svg'
 import AdminToolBar from '@/Components/Admin/AdminToolBar.vue';
 import { route } from 'ziggy-js';
@@ -23,7 +22,7 @@ const showDeleteModal = ref(false)
 const selectedTag = ref(null)
 const form = ref({
   name: '',
-  errors: {} // Initialisierung des errors-Objekts
+  errors: {}
 });
 
 function handleErrors(errors) {
@@ -61,7 +60,7 @@ function updateTag() {
     name: form.value.name
   }, {
     onSuccess: () => {
-      form.value.errors = {}; // Fehler zurücksetzen
+      form.value.errors = {};
       router.get(route('tags.index'));
       showEditModal.value = false;
     },
