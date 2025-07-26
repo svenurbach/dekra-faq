@@ -15,7 +15,7 @@ import { ref } from 'vue'
 import MoveUpIcon from '@assets/icons/icon-sort-up.svg'
 import MoveDownIcon from '@assets/icons/icon-sort-down.svg'
 
-const { faqs } = usePage().props
+const { faqs, categories, tags } = usePage().props
 
 const showCreateModal = ref(false)
 const showEditModal = ref(false)
@@ -23,7 +23,10 @@ const showDeleteModal = ref(false)
 
 const selectedFaq = ref(null)
 const form = ref({
-  name: '',
+  question: '',
+  answer: '',
+  category_id: '',
+  tags: [],
   errors: {}
 });
 
@@ -191,22 +194,63 @@ function createFaq() {
       </template>
       <p class="text-sm text-(--clr-gray-500) w-[60ch]">Füllen Sie die Felder für Frage und Antwort aus, wählen Sie eine
         Kategorie, vergeben Sie passende Schlagwörter und klicken Sie auf "Speichern".</p>
+
       <form @submit.prevent="createFaq">
-        <div class="pt-7 pb-14">
-          <input type="text" v-model="form.name"
-            class="w-full p-2 border border-(--clr-darkgreen-500) bg-(--clr-white) rounded-sm text-(--clr-gray-500)"
-            required />
-          <p v-if="form.errors && form.errors.name" class="mt-1 text-sm text-(--clr-red-500)">
-            {{ form.errors.name }}
-          </p>
+
+        <div class="space-y-8 pt-7 pb-14">
+
+          <div class="">
+            <input type="text" v-model="form.question"
+              class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)"
+              required placeholder="Frage eingeben" />
+            <p v-if="form.errors && form.errors.name" class="mt-1 text-sm text-(--clr-red-500)">
+              {{ form.errors.name }}
+            </p>
+          </div>
+
+          <div>
+            <textarea v-model="form.answer"
+                class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500) min-h-[100px]"
+              required placeholder="Antwort eingeben"></textarea>
+            <p v-if="form.errors && form.errors.answer" class="mt-1 text-sm text-(--clr-red-500)">
+              {{ form.errors.answer }}
+            </p>
+          </div>
+
+          <div class="flex gap-8">
+            <div class="basis-2/3">
+              <select v-model="form.tags"
+                class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)) h-auto">
+                <option value="" disabled selected>Tags auswählen</option>
+                <option v-for="tag in tags" :key="tag.id" :value="tag.id">
+                  {{ tag.name }}
+                </option>
+              </select>
+            </div>
+
+            <div>
+              <select v-model="form.category_id"
+                class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500))"
+                required>
+                <option value="" disabled selected>Kategorie auswählen</option>
+                <option v-for="category in categories" :key="category.id" :value="category.id">
+                  {{ category.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+
         </div>
+
         <div class="flex justify-between">
           <AppButton title="Abbrechen" :icon=CloseIcon class="bg-(--clr-red-700) text-(--clr-white)"
             @click="showCreateModal = false" type="button" />
           <AppButton title="Speichern" :icon=SaveIcon class="bg-(--clr-darkgreen-500) text-(--clr-brightgreen-200)"
             type="submit" />
         </div>
+
       </form>
+
     </AdminModal>
     <!-- End Create Modal -->
   </div>

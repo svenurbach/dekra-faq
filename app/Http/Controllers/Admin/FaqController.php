@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Faq;
+use App\Models\Category;
+use App\Models\Tag;
 
 class FaqController extends Controller
 {
@@ -34,6 +36,8 @@ class FaqController extends Controller
 
         return Inertia::render('Admin/Faqs/Index', [
             'faqs' => $faqs,
+            'categories' => Category::all(),
+            'tags' => Tag::all()
         ]);
     }
 
