@@ -1,11 +1,10 @@
 <script setup>
 import AppButton from '@/Components/AppButton.vue'
 import AddIcon from '@icons/icon-new.svg'
+import AdminSearch from '@/Components/Admin/AdminSearch.vue';
 
 defineProps({
-    items: {
-        type: Array
-    },
+    items: Array,
     title: {
         type: String,
         default: 'Fragen'
@@ -13,6 +12,10 @@ defineProps({
     buttonText: {
         type: String,
         default: 'Neue Frage erstellen'
+    },
+    routeName: {
+        type: String,
+        required: true
     }
 })
 </script>
@@ -25,7 +28,7 @@ defineProps({
                 <div class="text-sm text-(--clr-gray-500)">{{ items.length }} {{ title }} insgesamt</div>
             </div>
         </div>
-        <div>Suche nach {{ title }}</div>
+        <AdminSearch :placeholder="`Suche nach ${title}`" :routeName="routeName" />
         <div>
             <AppButton @click="$emit('create')" :icon="AddIcon" :title="`${buttonText}`"
                 class="bg-(--clr-darkgreen-500) text-(--clr-brightgreen-200)" />

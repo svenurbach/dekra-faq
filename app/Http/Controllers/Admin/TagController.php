@@ -6,16 +6,22 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Models\Tag;
+use Illuminate\Validation\Rule;
 
 class TagController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Inertia::render('Admin/Tags/Index', [
-            'tags' => Tag::all(),
+        $search = $request->input('search');
+        $tags = Tag::query()
+            ->when($search, fn($q) => $q->where('name', 'like', "%{$search}%"))
+            ->get();
+
+        return inertia('Admin/Tags/Index', [
+            'tags' => $tags,
         ]);
     }
 
@@ -32,7 +38,21 @@ class TagController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('tags')
+            ],
+        ], [
+            'name.unique' => 'Dieser Tag-Name existiert bereits. Bitte wählen Sie einen anderen Namen.'
+        ]);
+
+        Tag::create($validated);
+
+        return redirect()->route('tags.index')
+            ->with('success', 'Tag wurde erfolgreich erstellt.');
     }
 
     /**
@@ -54,9 +74,23 @@ class TagController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Tag $tag)
     {
-        //
+        $request->validate([
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('tags')->ignore($tag->id)
+            ],
+        ], [
+            'name.unique' => 'Dieser Tag-Name existiert bereits. Bitte wählen Sie einen anderen Namen.'
+        ]);
+
+        $tag->update($request->all());
+
+        return redirect()->route('tags.index')
+            ->with('success', 'Tag wurde erfolgreich aktualisiert.');
     }
 
     /**
@@ -66,6 +100,7 @@ class TagController extends Controller
     {
         Tag::findOrFail($id)->delete();
 
-        return redirect()->route('tags.index')->with('success', 'Tag gelöscht');
+        return redirect()->route('tags.index')
+            ->with('success', 'Tag wurde gelöscht');
     }
 }
