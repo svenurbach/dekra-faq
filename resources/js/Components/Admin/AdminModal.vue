@@ -17,7 +17,7 @@ const props = defineProps({
                     <button
                         class="size-9 rounded-sm flex items-center justify-center cursor-pointer bg-(--clr-darkgreen-500)"
                         @click="$emit('close')">
-                        <component :is="CloseIcon" alt="Close" class="p-2 fill-(--clr-white)" />
+                        <component :is="CloseIcon" alt="Close" class="p-2.5 fill-(--clr-brightgreen-200)" />
                     </button>
                 </header>
 
