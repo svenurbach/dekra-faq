@@ -19,7 +19,7 @@ import Triangle from '@assets/design-elements/triangle-bright-green.svg';
           <h1>
             <slot name="headline" />
           </h1>
-          <p class="w-[80ch] text-center">
+          <p class="md:w-[80ch] text-center">
             <slot name="subline" />
           </p>
         </div>
