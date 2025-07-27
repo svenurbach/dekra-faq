@@ -15,6 +15,7 @@ import { route } from 'ziggy-js';
 import { ref, computed } from 'vue'
 import MoveUpIcon from '@assets/icons/icon-sort-up.svg'
 import MoveDownIcon from '@assets/icons/icon-sort-down.svg'
+import AdminPagination from '@/Components/Admin/AdminPagination.vue';
 
 const { faqs, categories, tags } = usePage().props
 
@@ -117,12 +118,11 @@ function openCreateModal() {
 }
 
 function createFaq() {
-  // Vorbereitung der Daten für das Backend
   const payload = {
     question: form.value.question,
     answer: form.value.answer,
     category_id: form.value.category_id,
-    tags: form.value.tags.map(tag => tag.id) // Nur die IDs extrahieren
+    tags: form.value.tags.map(tag => tag.id)
   };
 
   router.post(route('faqs.store'), payload, {
@@ -198,7 +198,7 @@ function updateFaq() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="faq in faqs" :key="faq.id">
+          <tr v-for="faq in faqs.data" :key="faq.id">
             <td class="p-4 border-b border-r border-(--clr-white)">{{ faq.question }}</td>
             <td class="p-4 border-b border-(--clr-white)">{{ faq.category.name }}</td>
             <td class="p-4 border-b border-r border-(--clr-white)">{{ new
@@ -216,6 +216,7 @@ function updateFaq() {
         </tbody>
       </table>
     </div>
+    <AdminPagination :links="faqs.links" />
 
     <!-- Begin Delete Modal -->
     <AdminModal :show="showDeleteModal" @close="showDeleteModal = false">
@@ -282,7 +283,7 @@ function updateFaq() {
               <select v-model="form.category_id"
                 class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500))"
                 required>
-                <option value="" disabled selected >Kategorie auswählen</option>
+                <option value="" disabled selected>Kategorie auswählen</option>
                 <option v-for="category in categories" :key="category.id" :value="category.id">
                   {{ category.name }}
                 </option>
@@ -300,7 +301,7 @@ function updateFaq() {
     </AdminModal>
     <!-- End Create Modal -->
 
-        <!-- Begin Edit Modal -->
+    <!-- Begin Edit Modal -->
     <AdminModal :show="showEditModal" @close="showEditModal = false">
       <template #header>
         <h2>Frage bearbeiten</h2>
@@ -348,7 +349,7 @@ function updateFaq() {
               <select v-model="form.category_id"
                 class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500))"
                 required>
-                <option value="" disabled selected >Kategorie auswählen</option>
+                <option value="" disabled selected>Kategorie auswählen</option>
                 <option v-for="category in categories" :key="category.id" :value="category.id">
                   {{ category.name }}
                 </option>

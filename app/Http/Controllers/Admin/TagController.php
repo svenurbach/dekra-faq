@@ -18,7 +18,7 @@ class TagController extends Controller
         $search = $request->input('search');
         $tags = Tag::query()
             ->when($search, fn($q) => $q->where('name', 'like', "%{$search}%"))
-            ->get();
+            ->paginate(10);
 
         return inertia('Admin/Tags/Index', [
             'tags' => $tags,

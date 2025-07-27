@@ -10,6 +10,7 @@ import DeleteIcon from '@icons/icon-delete-1.svg'
 import CloseIcon from '@icons/icon-close-1.svg'
 import TrashIcon from '@icons/icon-delete.svg'
 import AdminToolBar from '@/Components/Admin/AdminToolBar.vue';
+import AdminPagination from '@/Components/Admin/AdminPagination.vue';
 import { route } from 'ziggy-js';
 import { ref } from 'vue'
 
@@ -105,7 +106,8 @@ function createTag() {
     </template>
   </AdminHeader>
   <div class="main-w">
-    <AdminToolBar title="Tags" buttonText="Neuen Tag erstellen" :items="tags" :routeName="'tags.index'" @create="openCreateModal" />
+    <AdminToolBar title="Tags" buttonText="Neuen Tag erstellen" :items="tags" :routeName="'tags.index'"
+      @create="openCreateModal" />
     <div
       class="overflow-x-auto border border-(--clr-gray-200) bg-(--clr-gray-100) shadow-lg rounded-lg text-(--clr-gray-600)">
       <table class="w-full table-auto md:table-fixed">
@@ -117,7 +119,7 @@ function createTag() {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="tag in tags" :key="tag.id">
+          <tr v-for="tag in tags.data" :key="tag.id">
             <td class="p-4 border-b border-r border-(--clr-white)">{{ tag.name }}</td>
             <td class="p-4 border-b border-r border-(--clr-white)">{{ new
               Date(tag.created_at).toLocaleDateString('de-DE',
@@ -135,6 +137,7 @@ function createTag() {
         </tbody>
       </table>
     </div>
+    <AdminPagination :links="tags.links" />
 
     <!-- Begin Delete Modal -->
     <AdminModal :show="showDeleteModal" @close="showDeleteModal = false">
@@ -161,7 +164,9 @@ function createTag() {
       <p class="text-sm text-(--clr-gray-500) w-[40ch]">Vergeben Sie einen aussagekräftigen neuen Namen für den Tag</p>
       <form @submit.prevent="updateTag">
         <div class="pt-7 pb-14">
-          <input type="text" v-model="form.name" class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)" required />
+          <input type="text" v-model="form.name"
+            class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)"
+            required />
           <p v-if="form.errors && form.errors.name" class="mt-1 text-sm text-(--clr-red-500)">
             {{ form.errors.name }}
           </p>
@@ -184,7 +189,9 @@ function createTag() {
       <p class="text-sm text-(--clr-gray-500) w-[40ch]">Vergeben Sie einen aussagekräftigen Namen für den neuen Tag</p>
       <form @submit.prevent="createTag">
         <div class="pt-7 pb-14">
-          <input type="text" v-model="form.name" class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)" required />
+          <input type="text" v-model="form.name"
+            class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)"
+            required />
           <p v-if="form.errors && form.errors.name" class="mt-1 text-sm text-(--clr-red-500)">
             {{ form.errors.name }}
           </p>

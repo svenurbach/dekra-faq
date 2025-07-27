@@ -32,7 +32,7 @@ class FaqController extends Controller
                 });
             })
             ->orderBy('sort_order')
-            ->get();
+            ->paginate(10);
 
         return Inertia::render('Admin/Faqs/Index', [
             'faqs' => $faqs,
