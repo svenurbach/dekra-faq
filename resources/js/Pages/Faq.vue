@@ -24,7 +24,7 @@ function filterByCategory(categoryName) {
             <AppCategoryBar :categories="categories" :activeCategory="activeCategory" @select-category="filterByCategory" class="-mt-9"/>
             <div class="text-(--clr-darkgreen-500)">
               <h2 v-if="activeCategory">
-                Fragen aus dem Bereich <span class="font-bold">{{ activeCategory }}</span>
+                Fragen aus dem <span class="font-bold">Bereich {{ activeCategory }}</span>
               </h2>
               <h2 v-if="page.url.startsWith('/?search')">Fragen zum Suchbegriff: <span class="font-bold">
                 {{ page.props.search }}</span></h2>
