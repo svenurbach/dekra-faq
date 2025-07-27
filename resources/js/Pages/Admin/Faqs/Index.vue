@@ -8,20 +8,23 @@ import EditIcon from '@icons/icon-edit.svg'
 import SaveIcon from '@icons/icon-check.svg'
 import DeleteIcon from '@icons/icon-delete-1.svg'
 import CloseIcon from '@icons/icon-close-1.svg'
+import RemoveIcon from '@icons/icon-remove.svg'
 import TrashIcon from '@icons/icon-delete.svg'
 import AdminToolBar from '@/Components/Admin/AdminToolBar.vue';
 import { route } from 'ziggy-js';
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import MoveUpIcon from '@assets/icons/icon-sort-up.svg'
 import MoveDownIcon from '@assets/icons/icon-sort-down.svg'
 
 const { faqs, categories, tags } = usePage().props
+
 
 const showCreateModal = ref(false)
 const showEditModal = ref(false)
 const showDeleteModal = ref(false)
 
 const selectedFaq = ref(null)
+const selectedTag = ref(null)
 const form = ref({
   question: '',
   answer: '',
@@ -30,11 +33,33 @@ const form = ref({
   errors: {}
 });
 
+// Begin Tag Handling
+const availableTags = computed(() => {
+  return tags.filter(tag => !form.value.tags.includes(tag.id));
+});
+
+function addTag() {
+  if (selectedTag.value && !form.value.tags.some(t => t.id === selectedTag.value.id)) {
+    form.value.tags.push({
+      id: selectedTag.value.id,
+      name: selectedTag.value.name
+    });
+    selectedTag.value = null;
+  }
+}
+
+function removeTag(index) {
+  if (form.value.tags) {
+    form.value.tags.splice(index, 1)
+  }
+}
+// End Tag Handling
+
 function handleErrors(errors) {
   form.value.errors = errors;
 }
 
-const moveUp = async (id) => {
+const moveUp = (id) => {
   router.post(`/admin/faqs/${id}/move-up`, {}, {
     onSuccess: () => {
       router.visit(route('faqs.index'), {
@@ -79,48 +104,70 @@ function deleteFaq() {
 }
 // End Delete
 
-// Begin Edit
-function openEditModal(faq) {
-  selectedFaq.value = faq
-  form.value = { name: faq.name }
-  showEditModal.value = true
-}
-
-function updateFaq() {
-  router.put(route('faqs.update', selectedFaq.value.id), {
-    name: form.value.name
-  }, {
-    onSuccess: () => {
-      form.value.errors = {};
-      router.get(route('faqs.index'));
-      showEditModal.value = false;
-    },
-    onError: (errors) => {
-      handleErrors(errors);
-    }
-  });
-}
-// End Edit
-
 // Begin Create
 function openCreateModal() {
-  form.value = { name: '' }
+  form.value = {
+    question: '',
+    answer: '',
+    category_id: '',
+    tags: [],
+  }
+  selectedTag.value = null
   showCreateModal.value = true
 }
 
 function createFaq() {
-  router.post(route('faqs.store'), form.value, {
+  // Vorbereitung der Daten für das Backend
+  const payload = {
+    question: form.value.question,
+    answer: form.value.answer,
+    category_id: form.value.category_id,
+    tags: form.value.tags.map(tag => tag.id) // Nur die IDs extrahieren
+  };
+
+  router.post(route('faqs.store'), payload, {
     onSuccess: () => {
-      router.get(route('faqs.index'), { preserveScroll: true })
-      showCreateModal.value = false
+      router.get(route('faqs.index'), { preserveScroll: true });
+      showCreateModal.value = false;
     },
     onError: (errors) => {
       handleErrors(errors);
+      console.error('Fehler:', errors);
     }
-  })
+  });
 }
 // End Create
 
+// Begin Edit
+function openEditModal(faq) {
+  selectedFaq.value = faq;
+  form.value = {
+    question: faq.question,
+    answer: faq.answer,
+    category_id: faq.category_id,
+    tags: faq.tags.map(tag => ({ id: tag.id, name: tag.name })),
+    errors: {}
+  };
+  showEditModal.value = true;
+}
+
+function updateFaq() {
+  router.put(route('faqs.update', selectedFaq.value.id), {
+    question: form.value.question,
+    answer: form.value.answer,
+    category_id: form.value.category_id,
+    tags: form.value.tags.map(tag => tag.id)
+  }, {
+    onSuccess: () => {
+      router.get(route('faqs.index'));
+      showEditModal.value = false;
+    },
+    onError: (errors) => {
+      form.value.errors = errors;
+    }
+  });
+}
+// End Edit
 
 </script>
 
@@ -159,7 +206,7 @@ function createFaq() {
                 { day: '2-digit', month: '2-digit', year: 'numeric' }) }}</td>
             <td class="p-4 border-b border-(--clr-white) text-center">
               <div class="flex justify-center gap-3">
-                <AdminActionButton @click.prevent="openConfirmDeleteModal(faq)" :icon="EditIcon" />
+                <AdminActionButton @click.prevent="openEditModal(faq)" :icon="EditIcon" />
                 <AdminActionButton @click.prevent="openConfirmDeleteModal(faq)" :icon="DeleteIcon" />
                 <AdminActionButton @click="moveUp(faq.id)" :icon="MoveUpIcon" />
                 <AdminActionButton @click="moveDown(faq.id)" :icon="MoveDownIcon" />
@@ -194,11 +241,8 @@ function createFaq() {
       </template>
       <p class="text-sm text-(--clr-gray-500) w-[60ch]">Füllen Sie die Felder für Frage und Antwort aus, wählen Sie eine
         Kategorie, vergeben Sie passende Schlagwörter und klicken Sie auf "Speichern".</p>
-
       <form @submit.prevent="createFaq">
-
         <div class="space-y-8 pt-7 pb-14">
-
           <div class="">
             <input type="text" v-model="form.question"
               class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)"
@@ -207,51 +251,120 @@ function createFaq() {
               {{ form.errors.name }}
             </p>
           </div>
-
           <div>
             <textarea v-model="form.answer"
-                class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500) min-h-[100px]"
+              class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500) min-h-[100px]"
               required placeholder="Antwort eingeben"></textarea>
             <p v-if="form.errors && form.errors.answer" class="mt-1 text-sm text-(--clr-red-500)">
               {{ form.errors.answer }}
             </p>
           </div>
-
           <div class="flex gap-8">
             <div class="basis-2/3">
-              <select v-model="form.tags"
+              <select v-model="selectedTag" @change="addTag()"
                 class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)) h-auto">
-                <option value="" disabled selected>Tags auswählen</option>
-                <option v-for="tag in tags" :key="tag.id" :value="tag.id">
+                <option value="" disabled selected>Tag auswählen</option>
+                <option v-for="tag in availableTags" :key="tag.id" :value="tag">
                   {{ tag.name }}
                 </option>
               </select>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <div v-for="(tag, index) in form.tags" :key="tag.id"
+                  class="group p-2 mr-2 rounded-sm text-sm flex items-center bg-(--clr-darkgreen-500) text-(--clr-white) transition-colors">
+                  {{ tag.name }}
+                  <button @click="removeTag(index)" class="ml-3 fill-(--clr-white) group-hover:bg-(--clr-red-500)">
+                    <component :is="RemoveIcon" class="size-5" />
+                  </button>
+                </div>
+              </div>
             </div>
-
             <div>
               <select v-model="form.category_id"
                 class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500))"
                 required>
-                <option value="" disabled selected>Kategorie auswählen</option>
+                <option value="" disabled selected >Kategorie auswählen</option>
                 <option v-for="category in categories" :key="category.id" :value="category.id">
                   {{ category.name }}
                 </option>
               </select>
             </div>
           </div>
-
         </div>
-
         <div class="flex justify-between">
           <AppButton title="Abbrechen" :icon=CloseIcon class="bg-(--clr-red-700) text-(--clr-white)"
             @click="showCreateModal = false" type="button" />
           <AppButton title="Speichern" :icon=SaveIcon class="bg-(--clr-darkgreen-500) text-(--clr-brightgreen-200)"
             type="submit" />
         </div>
-
       </form>
-
     </AdminModal>
     <!-- End Create Modal -->
+
+        <!-- Begin Edit Modal -->
+    <AdminModal :show="showEditModal" @close="showEditModal = false">
+      <template #header>
+        <h2>Frage bearbeiten</h2>
+      </template>
+      <p class="text-sm text-(--clr-gray-500) w-[60ch]">Füllen Sie die Felder für Frage und Antwort aus, wählen Sie eine
+        Kategorie, vergeben Sie passende Schlagwörter und klicken Sie auf "Speichern".</p>
+      <form @submit.prevent="updateFaq">
+        <div class="space-y-8 pt-7 pb-14">
+          <div class="">
+            <input type="text" v-model="form.question"
+              class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)"
+              required placeholder="Frage eingeben" />
+            <p v-if="form.errors && form.errors.name" class="mt-1 text-sm text-(--clr-red-500)">
+              {{ form.errors.name }}
+            </p>
+          </div>
+          <div>
+            <textarea v-model="form.answer"
+              class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500) min-h-[100px]"
+              required placeholder="Antwort eingeben"></textarea>
+            <p v-if="form.errors && form.errors.answer" class="mt-1 text-sm text-(--clr-red-500)">
+              {{ form.errors.answer }}
+            </p>
+          </div>
+          <div class="flex gap-8">
+            <div class="basis-2/3">
+              <select v-model="selectedTag" @change="addTag()"
+                class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500)) h-auto">
+                <option value="" disabled selected>Tag auswählen</option>
+                <option v-for="tag in availableTags" :key="tag.id" :value="tag">
+                  {{ tag.name }}
+                </option>
+              </select>
+              <div class="mt-3 flex flex-wrap gap-2">
+                <div v-for="(tag, index) in form.tags" :key="tag.id"
+                  class="group p-2 mr-2 rounded-sm text-sm flex items-center bg-(--clr-darkgreen-500) text-(--clr-white) transition-colors">
+                  {{ tag.name }}
+                  <button @click="removeTag(index)" class="ml-3 fill-(--clr-white) group-hover:bg-(--clr-red-500)">
+                    <component :is="RemoveIcon" class="size-5" />
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div>
+              <select v-model="form.category_id"
+                class="w-full p-2 border border-(--clr-gray-200) focus:border-(--clr-darkgreen-500) focus:outline-none bg-(--clr-white) rounded-sm text-(--clr-gray-500))"
+                required>
+                <option value="" disabled selected >Kategorie auswählen</option>
+                <option v-for="category in categories" :key="category.id" :value="category.id">
+                  {{ category.name }}
+                </option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-between">
+          <AppButton title="Abbrechen" :icon=CloseIcon class="bg-(--clr-red-700) text-(--clr-white)"
+            @click="showEditModal = false" type="button" />
+          <AppButton title="Speichern" :icon=SaveIcon class="bg-(--clr-darkgreen-500) text-(--clr-brightgreen-200)"
+            type="submit" />
+        </div>
+      </form>
+    </AdminModal>
+    <!-- End Edit Modal -->
+
   </div>
 </template>

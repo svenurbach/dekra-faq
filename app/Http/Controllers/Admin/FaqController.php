@@ -54,7 +54,28 @@ class FaqController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'question' => 'required|string|max:255',
+            'answer' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'tags' => 'nullable|array',
+            'tags.*' => 'exists:tags,id',
+        ]);
+
+
+        $faq = Faq::create([
+            'question' => $validated['question'],
+            'answer' => $validated['answer'],
+            'category_id' => $validated['category_id'],
+            'sort_order' => Faq::query()->max('sort_order') + 1
+        ]);
+
+        if (!empty($validated['tags'])) {
+            $faq->tags()->sync($validated['tags']);
+        }
+
+        return redirect()->route('faqs.index')
+            ->with('success', 'FAQ wurde erfolgreich erstellt.');
     }
 
     /**
@@ -76,9 +97,20 @@ class FaqController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, Faq $faq)
     {
-        //
+        $validated = $request->validate([
+            'question' => 'required|string|max:255',
+            'answer' => 'required|string',
+            'category_id' => 'required|exists:categories,id',
+            'tags' => 'array',
+            'tags.*' => 'exists:tags,id'
+        ]);
+
+        $faq->update($validated);
+        $faq->tags()->sync($validated['tags']);
+
+        return back()->with('success', 'FAQ updated successfully');
     }
 
     /**
