@@ -34,7 +34,7 @@ class LoginController extends Controller
                 ]);
             }
 
-            return Inertia::location(route('admin.dashboard'));
+            return Inertia::location(route('admin.home'));
         }
 
         return back()->withErrors([

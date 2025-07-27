@@ -15,7 +15,7 @@ Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 Route::middleware(['auth', IsAdmin::class])
     ->prefix('admin')
     ->group(function () {
-        Route::get('/', fn() => Inertia::render('Admin/Dashboard'))->name('admin.dashboard');
+        Route::get('/', fn() => Inertia::render('Admin/Faqs/Index'))->name('admin.home');
         Route::resource('faqs', \App\Http\Controllers\Admin\FaqController::class);
         Route::resource('tags', \App\Http\Controllers\Admin\TagController::class);
         Route::post('faqs/{faq}/move-up', [\App\Http\Controllers\Admin\FaqController::class, 'moveUp'])->name('faqs.moveUp');
