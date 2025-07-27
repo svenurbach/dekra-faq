@@ -25,7 +25,7 @@ defineProps({
         <div>
             <div v-if="items">
                 <div class="text-2xl text-(--clr-darkgreen-500)">{{ title }} Verwaltung</div>
-                <div class="text-sm text-(--clr-gray-500)">{{ items.length }} {{ title }} insgesamt</div>
+                <div class="text-sm text-(--clr-gray-500)">{{ items.total }} {{ title }} insgesamt</div>
             </div>
         </div>
         <AdminSearch :placeholder="`Suche nach ${title}`" :routeName="routeName" />
