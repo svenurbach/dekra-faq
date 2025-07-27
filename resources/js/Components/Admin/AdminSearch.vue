@@ -27,7 +27,7 @@ function search() {
 </script>
 
 <template>
-  <div class="relative w-2xl">
+  <div class="relative w-xl">
     <input v-model="query" @keyup.enter="search" type="text" :placeholder
       class="rounded-lg h-12 w-full text-(--clr-gray-900) bg-(--clr-gray-100) border border-(--clr-gray-200) p-(--app-padding) overflow-hidden" />
     <button @click="search"
