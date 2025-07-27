@@ -15,7 +15,7 @@ const toggle = () => {
 </script>
 
 <template>
-    <div class="rounded-(--app-radius) py-(--app-padding) px-[calc(var(--app-padding)*1.5)] border-1 border-(--clr-gray-200)"
+    <div class="rounded-(--app-radius) py-(--app-padding) px-[calc(var(--app-padding)*1.5)] border border-(--clr-gray-200)"
         :class="show ? 'bg-(--clr-darkgreen-500) text-(--clr-white)' : 'bg-(--clr-gray-100) text-(--clr-darkgreen-500)'">
         <div @click.prevent="toggle" class="flex items-center justify-between cursor-pointer">
             {{ title }}
@@ -28,7 +28,7 @@ const toggle = () => {
                 </svg>
             </div>
         </div>
-        <div class="bg-(--clr-darkgreen-500) w-3/4 py-(--app-padding)" v-if="show">
+        <div class="bg-(--clr-darkgreen-500) md:w-3/4 py-(--app-padding)" v-if="show">
             <slot />
         </div>
     </div>

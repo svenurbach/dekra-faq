@@ -32,8 +32,8 @@ const iconMap = {
 </script>
 
 <template>
-    <ul class="flex justify-center gap-[calc(var(--app-padding)*2)] pb-[calc(var(--app-padding)*6)]">
-        <li v-for="category in categories" :key="category.id" class="w-full">
+    <ul class="grid grid-cols-2 md:grid-cols-4 gap-[calc(var(--app-padding)*2)]  pb-[calc(var(--app-padding)*6)]">
+        <li v-for="category in categories" :key="category.id" class="basis-1/2 md:w-full">
             <AppCategoryBarItem :name="category.name" :icon="iconMap[category.name]" :active-category="activeCategory" @click="select(category.name)"
              />
         </li>

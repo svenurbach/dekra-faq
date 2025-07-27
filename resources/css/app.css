@@ -14,7 +14,7 @@
 }
 
 h1 {
-    @apply text-5xl pb-(--app-padding);
+    @apply text-4xl md:text-5xl pb-(--app-padding);
 }
 
 h2 {
@@ -22,9 +22,9 @@ h2 {
 }
 
 .main-w {
-    @apply max-w-6xl mx-auto;
+    @apply max-w-full sm:max-w-2xl md:max-w-4xl lg:max-w-6xl mx-auto px-4;
 }
 
 body {
-    font-size: 18px;
+    @apply text-[16px] md:text-[18px]
 }
